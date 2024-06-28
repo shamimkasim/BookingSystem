@@ -1,0 +1,22 @@
+# Use the official .NET 5 SDK image
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+WORKDIR /src
+
+# Copy the csproj file and restore dependencies
+COPY BookingSystem.API/*.csproj BookingSystem.API/
+RUN dotnet restore BookingSystem.API/BookingSystem.API.csproj
+
+# Copy the rest of the application code
+COPY BookingSystem.API/. BookingSystem.API/
+WORKDIR /src/BookingSystem.API
+RUN dotnet build BookingSystem.API.csproj -c Release -o /app/build
+
+# Publish the application
+FROM build AS publish
+RUN dotnet publish BookingSystem.API.csproj -c Release -o /app/publish
+
+# Use the official .NET 5 runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS runtime
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "BookingSystem.API.dll"]
