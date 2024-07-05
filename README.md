@@ -47,3 +47,32 @@ BookingSystem/
 ├── BookingSystem.Tests/         # Test project
 ├── docker-compose.yml           # Docker Compose file
 └── README.md                    # Project README
+
+## Create the Database
+
+To set up the database for this project, follow these steps:
+
+1. **Open your database management system (DBMS).** This guide assumes you are using a MySQL-compatible DBMS, but you may need to adjust the commands for other systems like PostgreSQL or SQL Server.
+
+2. **Run the following SQL commands to create the database and tables:**
+
+   ```sql
+   CREATE DATABASE my_database;
+   USE my_database;
+
+   CREATE TABLE users (
+       id INT AUTO_INCREMENT PRIMARY KEY,
+       name VARCHAR(100) NOT NULL,
+       email VARCHAR(100) NOT NULL UNIQUE,
+       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+   );
+
+   CREATE TABLE posts (
+       id INT AUTO_INCREMENT PRIMARY KEY,
+       user_id INT NOT NULL,
+       title VARCHAR(200) NOT NULL,
+       content TEXT NOT NULL,
+       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+       FOREIGN KEY (user_id) REFERENCES users(id)
+   );
+
